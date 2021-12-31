@@ -1,0 +1,29 @@
+{
+  "name": "ll-show-your-work-bot",
+  "version": "1.0.0",
+  "description": "the show your work bot for 2022",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/learninglab-studio/ll-show-your-work-bot.git"
+  },
+  "author": "Elle L. Studio",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/learninglab-studio/ll-show-your-work-bot/issues"
+  },
+  "homepage": "https://github.com/learninglab-studio/ll-show-your-work-bot#readme",
+  "dependencies": {
+    "@slack/bolt": "^3.8.1",
+    "airtable": "^0.11.1",
+    "cheerio": "^1.0.0-rc.10",
+    "colors": "^1.4.0",
+    "dotenv": "^10.0.0",
+    "htmlparser2": "^7.2.0",
+    "open-graph-scraper": "^4.11.0"
+  }
+}
