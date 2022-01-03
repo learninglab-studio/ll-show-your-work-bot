@@ -30,7 +30,7 @@ app.command('/show', slashHandler.show);
 app.command('/savehackmd', slashHandler.saveHackMd);
 app.command('/emoji2doc', slashHandler.emoji2Doc);
 app.command('/corgi', slashHandler.corgi);
-app.command('/action', slashHandler.corgi);
+app.command('/action', slashHandler.action);
 
 
 app.event("file_shared", eventHandler.fileShared);

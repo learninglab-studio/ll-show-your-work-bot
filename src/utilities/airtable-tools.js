@@ -13,7 +13,8 @@ module.exports.addRecord = async function(options){
       console.error(err);
       return;
     });
-  // magenta(airtableResult)  
+  // magenta(airtableResult)
+  return airtableResult   
 }
 
 module.exports.addRecords = async function(options){

@@ -1,6 +1,7 @@
 const workingDocRecordFromHackMdUrl = require(`../airtable-record-factories/working-doc-from-hackmd-link`)
 const { blue, cyan, yellow, magenta, grey } = require(`../utilities/mk-utilities`)
 const zk = require(`../utilities/zk-utilities`)
+const actionFromCommand = require(`../airtable-record-factories/action-from-command`)
 
 exports.show = async ({ command, ack, say }) => {
     ack();
@@ -24,13 +25,16 @@ exports.saveHackMd = async ({ command, ack, say }) => {
     }
 }
 
-exports.action = ({ command, ack, say }) => {
+exports.action = async ({ command, ack, say }) => {
     ack();
-    try {
-        cyan(`creating action`)
-        grey(command)
-    } catch (error) {
-        
+    const result = await actionFromCommand(command);
+    if (result) {
+        say({
+            text: `got it and it's safe in airtable. click <${process.env.AIRTABLE_ACTION_LINK_PREFIX}${result.id}?blocks=hide|*here*> if you'd like to edit it or just check it out.`,
+            unfurl_links: false
+        })
+    } else {
+        say(`no luck--some sort of error happened.`)
     }
 }
 
