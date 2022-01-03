@@ -1,10 +1,11 @@
-const Airtable = require(`airtable`)
-const { cyan, blue, yellow } = require(`./mk-utilities`)
+const Airtable = require(`airtable`);
+const { cyan, blue, yellow, magenta } = require(`./mk-utilities`)
 
 module.exports.addRecord = async function(options){
   var base = new Airtable({apiKey: process.env.AIRTABLE_API_KEY}).base(options.baseId);
   var airtableResult = await base(options.table).create(options.record).then(result => {
     console.log("saved to airtable");
+    // cyan(result)
     return result;
   })
     .catch(err => {
@@ -12,7 +13,23 @@ module.exports.addRecord = async function(options){
       console.error(err);
       return;
     });
-  return airtableResult;
+  // magenta(airtableResult)  
+}
+
+module.exports.addRecords = async function(options){
+  var base = new Airtable({apiKey: process.env.AIRTABLE_API_KEY}).base(options.baseId);
+  var airtableResult = await base(options.table).create(options.records).then(result => {
+    console.log("saved to airtable");
+    // cyan(result)
+    return result;
+  })
+    .catch(err => {
+      console.log("\nthere was an error with the AT push\n");
+      console.error(err);
+      return;
+    });
+  // magenta(airtableResult) 
+  return airtableResult 
 }
 
 module.exports.findOneById = async function(options) {

@@ -1,3 +1,11 @@
+const { yellow, grey, red, cyan, blue, magenta, divider } = require("colors")
+
+module.exports = async ({ message, client, say }) => {
+    console.log(`showing that image`)
+    // say(`we'll show that, ${message.user}`)
+    yellow(message)
+}
+
 const airtableTools = require(`../utilities/airtable-tools`)
 
 function makeSlackImageURL (permalink, permalink_public) {
@@ -32,8 +40,8 @@ const externalLinkListener = async function (event, client, fileInfo) {
                     }
                 ],
                 "Status": "no-status",
-                "SharedBySlackID": event.user_id,
-                "SavedBySlackID": event.user_id  
+                // "SharedBySlackID": event.user_id,
+                // "SavedBySlackID": event.user_id  
             }
         })
         } else {
