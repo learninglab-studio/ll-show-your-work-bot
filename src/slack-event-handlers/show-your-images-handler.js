@@ -1,60 +1,49 @@
-const { yellow, grey, red, cyan, blue, magenta, divider } = require("colors")
+const { yellow, grey, red, cyan, blue, magenta, divider } = require("../utilities/mk-utilities")
+const airtableTools = require('../utilities/airtable-tools')
 
 module.exports = async ({ message, client, say }) => {
     console.log(`showing that image`)
     // say(`we'll show that, ${message.user}`)
     yellow(message)
+    if (message.files) {
+        const publicResult = await client.files.sharedPublicURL({
+            token: process.env.SLACK_USER_TOKEN,
+            file: message.files[0].id,
+        });
+        const theRecord = {
+            baseId: process.env.AIRTABLE_SHOW_BASE,
+            table: "ShowYourImages",
+            record: {
+                "Id": `${message.files[0].name}-${message.event_ts}`,
+                "Title": message.files[0].title,
+                "FileName": message.files[0].name,
+                "SlackFileInfoJson": JSON.stringify(message.files[0], null, 4),
+                // "SlackFileInfoJSON": JSON.stringify(fileInfo, null, 4),
+                "ImageFiles": [
+                    {
+                    "url": makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public)
+                    }
+                ],
+                "SlackUrl": makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public),
+                "PostedBySlackUser": message.files[0].user,
+                "SlackTs": message.event_ts
+            }
+        }
+        magenta(divider)
+        cyan(theRecord)
+        const airtableResult = await airtableTools.addRecord(theRecord) 
+        const mdPostResult = await client.chat.postMessage({
+            channel: message.user,
+            text: `posted a photo! ${makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public)}.\n\nhere's your markdown:\n\`\`\`![alt text](${makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public)})\`\`\``
+        })
+    }
 }
 
-// const airtableTools = require(`../utilities/airtable-tools`)
 
-// function makeSlackImageURL (permalink, permalink_public) {
-//     let secrets = (permalink_public.split("slack-files.com/")[1]).split("-")
-//     let suffix = permalink.split("/")[(permalink.split("/").length - 1)]
-//     let filePath = `https://files.slack.com/files-pri/${secrets[0]}-${secrets[1]}/${suffix}?pub_secret=${secrets[2]}`
-//     return filePath
-//   }
+function makeSlackImageURL (permalink, permalink_public) {
+    let secrets = (permalink_public.split("slack-files.com/")[1]).split("-")
+    let suffix = permalink.split("/")[(permalink.split("/").length - 1)]
+    let filePath = `https://files.slack.com/files-pri/${secrets[0]}-${secrets[1]}/${suffix}?pub_secret=${secrets[2]}`
+    return filePath
+}
   
-// const externalLinkListener = async function (event, client, fileInfo) {
-//     try {
-//         if (fileInfo.file.public_url_shared !== true) {
-//         const publicResult = await client.files.sharedPublicURL({
-//             token: process.env.SLACK_USER_TOKEN,
-//             file: event.file_id,
-//         });
-//         // console.log(`\nhere's the public result:\n\n${JSON.stringify(publicResult, null, 4)}`)  
-//         const mdPostResult = await client.chat.postMessage({
-//             channel: event.user_id,
-//             text: `posted a photo! but it was already public: ${makeSlackImageURL(fileInfo.file.permalink, fileInfo.file.permalink_public)}.\n\nhere's your markdown:\n\`\`\`![alt text](${makeSlackImageURL(fileInfo.file.permalink, fileInfo.file.permalink_public)})\`\`\``
-//         })
-//         const airtableResult = await airtableTools.addRecord({
-//             baseId: process.env.AIRTABLE_STUDIO_BOT_BASE,
-//             table: "Images",
-//             record: {
-//                 "Name": fileInfo.file.title,
-//                 "SlackEventJSON": JSON.stringify(event, null, 4),
-//                 "SlackFileInfoJSON": JSON.stringify(fileInfo, null, 4),
-//                 "ImageFiles": [
-//                     {
-//                     "url": makeSlackImageURL(fileInfo.file.permalink, fileInfo.file.permalink_public)
-//                     }
-//                 ],
-//                 "Status": "no-status",
-//                 // "SharedBySlackID": event.user_id,
-//                 // "SavedBySlackID": event.user_id  
-//             }
-//         })
-//         } else {
-//         console.log(`file was already public: ${fileInfo.file.url_private} is what we'd handle`);
-//         const mdPostResult = await client.chat.postMessage({
-//             channel: event.user_id,
-//             text: `posted a photo! but it was already public: ${makeSlackImageURL(fileInfo.file.permalink, fileInfo.file.permalink_public)}.\n\nhere's your markdown:\n\`\`\`![alt text](${makeSlackImageURL(fileInfo.file.permalink, fileInfo.file.permalink_public)})\`\`\``
-//         })
-//         }
-//     }
-//     catch (error) {
-//         console.error(error);
-//     }
-// }
-  
-// module.exports = externalLinkListener

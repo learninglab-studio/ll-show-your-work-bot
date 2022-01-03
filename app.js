@@ -20,33 +20,33 @@ const app = new App({
     port: process.env.PORT || 3000
   });
 
-app.message(handleOnlyIms, imHandler);
+// app.message(handleOnlyIms, imHandler);
 app.message('hello', messageHandler.hello);
 app.message(/.*/, mw.noBot, messageHandler.parseAllNonBot);
 // app.message(/.*/, mw.Work, showYourWorkHandler);
 
 
-app.command('/show', slashHandler.show);
+// app.command('/show', slashHandler.show);
 app.command('/savehackmd', slashHandler.saveHackMd);
-app.command('/emoji2doc', slashHandler.emoji2Doc);
-app.command('/corgi', slashHandler.corgi);
+// app.command('/emoji2doc', slashHandler.emoji2Doc);
+// app.command('/corgi', slashHandler.corgi);
 app.command('/action', slashHandler.action);
 
 
-app.event("file_shared", eventHandler.fileShared);
-app.event("reaction_added", eventHandler.reactionAdded);
-app.event("reaction_removed", eventHandler.reactionRemoved);
-app.event('pin_added', eventHandler.pinAdded);
-app.event('pin_removed', eventHandler.pinRemoved);
-app.event('app_home_opened', eventHandler.appHomeOpened);
-app.event('message', eventHandler.message);
-app.event(/.*/, eventHandler.log);
+// app.event("file_shared", eventHandler.fileShared);
+// app.event("reaction_added", eventHandler.reactionAdded);
+// app.event("reaction_removed", eventHandler.reactionRemoved);
+// app.event('pin_added', eventHandler.pinAdded);
+// app.event('pin_removed', eventHandler.pinRemoved);
+// app.event('app_home_opened', eventHandler.appHomeOpened);
+// app.event('message', eventHandler.message);
+// app.event(/.*/, eventHandler.log);
 
-app.shortcut(`show_your_work`, shortcutHandler.showYourWork);
-app.shortcut(`send_me_markdown`, shortcutHandler.sendMeMarkdown);
-app.shortcut(/.*/, shortcutHandler.log);
+// app.shortcut(`show_your_work`, shortcutHandler.showYourWork);
+// app.shortcut(`send_me_markdown`, shortcutHandler.sendMeMarkdown);
+// app.shortcut(/.*/, shortcutHandler.log);
 
-app.action(/.*/, actionHandler.log);
+// app.action(/.*/, actionHandler.log);
 
 (async () => {
   await app.start(process.env.PORT || 3000);

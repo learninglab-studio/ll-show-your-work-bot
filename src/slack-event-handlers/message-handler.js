@@ -25,7 +25,8 @@ exports.parseAllNonBot = async ({ message, client, say }) => {
         await showYourLinksHandler({ message: message, say: say })
     } else if (message.channel == process.env.SLACK_SHOW_YOUR_IMAGES_CHANNEL) {
         yellow(`image`)
-        await showYourImagesHandler({ message: message, say: say })
+        magenta(message)
+        await showYourImagesHandler({ message: message, client: client, say: say })
     } else {
         yellow(`this isn't work, images or links--not handling for now`)
         grey(message)
