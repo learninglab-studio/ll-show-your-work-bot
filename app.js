@@ -9,8 +9,11 @@ const slashHandler = require('./src/slack-event-handlers/slash-handler.js');
 const shortcutHandler = require('./src/slack-event-handlers/shortcut-handler.js');
 const actionHandler = require('./src/slack-event-handlers/action-handler.js');
 const imHandler = require(`./src/slack-event-handlers/im-handler`)
+
+// const showYourWorkHandler = require(`./src/slack-event-handlers/show-your-work-handler`)
+
 const mw = require(`./src/slack-event-handlers/slack-middleware`)
-const showYourWorkHandler = require(`./src/slack-event-handlers/show-your-work-handler`)
+
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
