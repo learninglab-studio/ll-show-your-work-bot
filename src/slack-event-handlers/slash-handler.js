@@ -26,17 +26,23 @@ exports.saveHackMd = async ({ command, ack, say }) => {
     }
 }
 
-exports.action = async ({ command, ack, say }) => {
+exports.action = async ({ command, client, ack, say }) => {
     ack();
     const result = await actionFromCommand(command);
     if (result) {
-        say({
+        const mdPostResult = await client.chat.postMessage({
+            channel: command.user_id,
+            text: `Added your requested action to Airtable. Click <${process.env.AIRTABLE_ACTION_LINK_PREFIX}${result.id}?blocks=hide|*here*> if you'd like to edit it or just check it out. What we have right now is \`${command.text}\``,
+            unfurl_links: false
+        })
+        grey({
             text: `got it and it's safe in airtable. click <${process.env.AIRTABLE_ACTION_LINK_PREFIX}${result.id}?blocks=hide|*here*> if you'd like to edit it or just check it out.`,
             unfurl_links: false
         })
     } else {
-        say(`no luck--some sort of error happened.`)
+        blue(`no luck--some sort of error happened.`)
     }
+
 }
 
 exports.emoji2Doc = async ({ command, ack, say }) => {
