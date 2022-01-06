@@ -1,8 +1,10 @@
 const Airtable = require(`airtable`);
-const { cyan, blue, yellow, magenta } = require(`./mk-utilities`)
+const { cyan, blue, yellow, magenta, grey } = require(`./mk-utilities`)
 
 module.exports.addRecord = async function(options){
   var base = new Airtable({apiKey: process.env.AIRTABLE_API_KEY}).base(options.baseId);
+  magenta(`About to add record with ptions:`)
+  grey(options)
   var airtableResult = await base(options.table).create(options.record).then(result => {
     console.log("saved to airtable");
     // cyan(result)

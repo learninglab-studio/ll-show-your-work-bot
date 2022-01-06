@@ -8,9 +8,7 @@ const eventHandler = require('./src/slack-event-handlers/event-handler.js');
 const slashHandler = require('./src/slack-event-handlers/slash-handler.js');
 const shortcutHandler = require('./src/slack-event-handlers/shortcut-handler.js');
 const actionHandler = require('./src/slack-event-handlers/action-handler.js');
-const imHandler = require(`./src/slack-event-handlers/im-handler`)
-
-// const showYourWorkHandler = require(`./src/slack-event-handlers/show-your-work-handler`)
+const appHomeHandler = require(`./src/slack-event-handlers/app-home-handler`)
 
 const mw = require(`./src/slack-event-handlers/slack-middleware`)
 
@@ -24,7 +22,7 @@ const app = new App({
   });
 
 // app.message(handleOnlyIms, imHandler);
-app.message('hello', messageHandler.hello);
+app.message('hello-show-bot', messageHandler.hello);
 app.message(/.*/, mw.noBot, messageHandler.parseAllNonBot);
 // app.message(/.*/, mw.Work, showYourWorkHandler);
 
@@ -36,14 +34,15 @@ app.command('/savehackmd', slashHandler.saveHackMd);
 app.command('/action', slashHandler.action);
 
 
+app.event("reaction_added", eventHandler.reactionAdded);
+app.event("reaction_removed", eventHandler.reactionRemoved);
+
 // app.event("file_shared", eventHandler.fileShared);
-// app.event("reaction_added", eventHandler.reactionAdded);
-// app.event("reaction_removed", eventHandler.reactionRemoved);
 // app.event('pin_added', eventHandler.pinAdded);
 // app.event('pin_removed', eventHandler.pinRemoved);
-// app.event('app_home_opened', eventHandler.appHomeOpened);
+// app.event('app_home_opened', appHomeHandler);
 // app.event('message', eventHandler.message);
-// app.event(/.*/, eventHandler.log);
+app.event(/.*/, eventHandler.log);
 
 // app.shortcut(`show_your_work`, shortcutHandler.showYourWork);
 // app.shortcut(`send_me_markdown`, shortcutHandler.sendMeMarkdown);
@@ -65,8 +64,3 @@ app.command('/action', slashHandler.action);
 })();
 
 
-async function handleOnlyIms({ message, next }) {
-  if (message.channel_type && (message.channel_type == 'im' || message.channel_type == 'mpim' )) {
-    await next();
-  }
-}

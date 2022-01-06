@@ -22,7 +22,7 @@ exports.parseAllNonBot = async ({ message, client, say }) => {
         let result = await showYourWorkHandler({ message: message, say: say, client: client })
     } else if (message.channel == process.env.SLACK_SHOW_YOUR_LINKS_CHANNEL) {
         yellow(`link`)
-        await showYourLinksHandler({ message: message, say: say })
+        await showYourLinksHandler({ message: message, say: say, client: client })
     } else if (message.channel == process.env.SLACK_SHOW_YOUR_IMAGES_CHANNEL) {
         yellow(`image`)
         magenta(message)

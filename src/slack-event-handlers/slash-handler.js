@@ -1,7 +1,8 @@
-const workingDocRecordFromHackMdUrl = require(`../airtable-record-factories/working-doc-from-hackmd-link`)
 const { blue, cyan, yellow, magenta, grey } = require(`../utilities/mk-utilities`)
 const zk = require(`../utilities/zk-utilities`)
 const actionFromCommand = require(`../airtable-record-factories/action-from-command`)
+const workingDocRecordFromHackMdUrl = require(`../airtable-record-factories/working-doc-from-hackmd-link`)
+
 
 exports.show = async ({ command, ack, say }) => {
     ack();
@@ -11,8 +12,8 @@ exports.show = async ({ command, ack, say }) => {
 
 exports.saveHackMd = async ({ command, ack, say }) => {
     ack();
-    console.log(JSON.stringify(command, null, 4))
-    console.log(`let's archive this: ${command.text}`)
+    // console.log(JSON.stringify(command, null, 4))
+    // console.log(`let's archive this: ${command.text}`)
     if (isValidHackMdUrl(command.text)) {
         console.log(`looks like a valid hackmd URL`)
         const airtableResult = await workingDocRecordFromHackMdUrl(normalizeHackMdUrl(command.text))

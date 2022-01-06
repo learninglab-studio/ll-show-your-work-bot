@@ -1,12 +1,10 @@
 const airtableTools = require(`../utilities/airtable-tools`)
-const { yellow, blue, cyan } = require(`../utilities/mk-utilities`)
+const { yellow, blue, cyan, magenta, grey } = require(`../utilities/mk-utilities`)
 const cheerio = require(`cheerio`)
 const axios = require(`axios`)
-const { magenta } = require("colors")
 
 module.exports = async function (url) {
-    console.log(`starting starting workingDocFromHackMd`)
-    // cheerio and axios load up the content
+    console.log(`starting workingDocFromHackMd with ${url}`)
     const hackMdData = await getHackMdData(url)
     // yellow(hackMdData)
     const airtableResult = await airtableTools.addRecord({

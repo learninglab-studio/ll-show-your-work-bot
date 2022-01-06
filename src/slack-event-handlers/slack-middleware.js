@@ -9,3 +9,9 @@ module.exports.isWork = async ({message, next}) => {
     await next();
   }
 }
+
+module.exports.handleOnlyIms = async ({ message, next }) => {
+  if (message.channel_type && (message.channel_type == 'im' || message.channel_type == 'mpim' )) {
+    await next();
+  }
+}

@@ -1,5 +1,5 @@
-const { cyan, magenta, yellow, blue, grey, red, divider, wait, isValidUrl } = require("../utilities/mk-utilities");
-const airtableTools = require(`../utilities/airtable-tools`);
+const { cyan, magenta, yellow, blue, grey, red, divider, wait, isValidUrl } = require("../../utilities/mk-utilities");
+const airtableTools = require(`../../utilities/airtable-tools`);
 
 module.exports = async ({ message, client, say }) => {
     if (message.channel_type == "im") {
