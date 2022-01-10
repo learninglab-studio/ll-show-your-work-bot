@@ -2,7 +2,9 @@ const { blue, cyan, yellow, magenta, grey } = require(`../utilities/mk-utilities
 const zk = require(`../utilities/zk-utilities`)
 const actionFromCommand = require(`../airtable-record-factories/action-from-command`)
 const workingDocRecordFromHackMdUrl = require(`../airtable-record-factories/working-doc-from-hackmd-link`)
-
+const yargs = require(`yargs`)
+const { hideBin } = require('yargs/helpers')
+const airtableTools = require(`../utilities/airtable-tools`)
 
 exports.show = async ({ command, ack, say }) => {
     ack();
@@ -62,6 +64,44 @@ exports.rocket = async ({ message, say }) => {
     await say(`thanks for the :rocket:, <@${message.user}>`);
 }
 
+exports.llUtilities = async ({ command, ack, say, client }) => {
+    ack();
+    magenta(`llutilities`)
+    theArgs = yargs.parse(command.text)
+    grey(command)
+    say(`got your args: ${JSON.stringify(theArgs, null, 4)}`)
+    
+    if (theArgs.syncEmoji || theArgs.syncEmojis) {
+        // handle /ll-utilities --syncEmoji
+        magenta(`about to sync emoji`)
+        const allEmojis = await client.emoji.list()
+        yellow(allEmojis)
+        const recordArray = []
+        for (emoji in allEmojis.emoji) {
+            recordArray.push({
+                fields: {
+                    Id: emoji,
+                    // SlackText: ,
+                    Title: emoji,
+                    Image: [{ "url": allEmojis.emoji[emoji] }],
+                    Workspaces: [command.team_domain]
+                }
+            })
+        }
+        blue(recordArray)
+        const recordsForAirtable = sliceIntoChunks(recordArray, 10);
+        for (let i = 0; i < recordsForAirtable.length; i++) {
+            const element = recordsForAirtable[i];
+            const airtableResult = await airtableTools.addRecords({
+                baseId: process.env.AIRTABLE_SHOW_BASE,
+                table: "Emojis",
+                records: element
+            })
+        }
+        
+    }
+}
+
 function isValidHackMdUrl(string) {
     let url;
     try {
@@ -85,5 +125,17 @@ return url.protocol === "http:" || url.protocol === "https:";
 function normalizeHackMdUrl(string) {
     return string.split(`?`)[0]
 }
+
+function sliceIntoChunks(arr, chunkSize) {
+    const res = [];
+    for (let i = 0; i < arr.length; i += chunkSize) {
+        const chunk = arr.slice(i, i + chunkSize);
+        res.push(chunk);
+    }
+    return res;
+}
+
+
+
 
 exports.corgi = zk.corgi
