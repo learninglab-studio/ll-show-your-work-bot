@@ -135,6 +135,9 @@ function sliceIntoChunks(arr, chunkSize) {
     return res;
 }
 
+function syncEmojis() {
+    
+}
 
 
 
