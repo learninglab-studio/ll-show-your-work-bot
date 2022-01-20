@@ -2,10 +2,11 @@ const { yellow, grey, red, cyan, blue, magenta, divider } = require("../utilitie
 const airtableTools = require('../utilities/airtable-tools')
 
 module.exports = async ({ message, client, say }) => {
-    console.log(`showing that image`)
+    magenta(`handling post in show-your-work`)
     // say(`we'll show that, ${message.user}`)
     yellow(message)
     if (message.files) {
+        magenta(`handling attachment`)
         const publicResult = await client.files.sharedPublicURL({
             token: process.env.SLACK_USER_TOKEN,
             file: message.files[0].id,
@@ -33,9 +34,14 @@ module.exports = async ({ message, client, say }) => {
         cyan(theRecord)
         const airtableResult = await airtableTools.addRecord(theRecord) 
         const mdPostResult = await client.chat.postMessage({
-            channel: message.user,
-            text: `posted a photo! ${makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public)}.\n\nhere's your markdown:\n\`\`\`![alt text](${makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public)})\`\`\``
+            channel: message.channel,
+            thread_ts: message.ts,
+            unfurl_media: false,
+            unfurl_links: false,
+            parse: "none",
+            text: `here's the markdown for embedding the image: \n\`\`\`![alt text](${makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public)})\`\`\``
         })
+
     }
 }
 
