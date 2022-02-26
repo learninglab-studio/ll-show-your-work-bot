@@ -5,13 +5,26 @@ const path = require('path')
 exports.reactionAdded = async ({ event, context }) => {
   yellow(`got a reactionAdded: ${event.type}:`)
   grey(event)
-  grey(context)
+  const theOptions = {
+    baseId: process.env.AIRTABLE_SHOW_BASE,
+    table: "Reactions",
+    record: {
+        "EmojiId": event.reaction,
+        "EventTs": event.event_ts,
+        "UserId": event.user,
+        "ItemTs": event.item.ts,
+        "ItemChannel": event.item.channel,
+        "ItemType": event.item.type,
+        "ItemUser": event.item_user,
+        "EventJson": JSON.stringify(event)
+    }
+  }
+  const airtableResult = await airtableTools.addRecord(theOptions) 
 }
 
 exports.reactionRemoved = async ({ event, context }) => {
   yellow(`got a reactionRemoved ${event.type}:`)
   grey(event)
-  grey(context)
 }
 
 exports.log = async ({ event }) => {
@@ -50,3 +63,4 @@ exports.log = async ({ event }) => {
 //     console.error(error)
 //   }
 // }
+

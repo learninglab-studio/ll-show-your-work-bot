@@ -9,40 +9,46 @@ module.exports = async ({ message, client, say }) => {
     magenta(`got something in show your links`)
     grey(message)
     const theLinks = []
-    for (let i = 0; i < message.blocks.length; i++) {
-        const block = message.blocks[i];
-        for (let j = 0; j < block.elements.length; j++) {
-            const element = block.elements[j];
-            for (let k = 0; k < element.elements.length; k++) {
-                const subelement = element.elements[k];
-                if (subelement.type == "link") {
-                    theLinks.push(subelement.url)
+    try {
+        for (let i = 0; i < message.blocks.length; i++) {
+            const block = message.blocks[i];
+            for (let j = 0; j < block.elements.length; j++) {
+                const element = block.elements[j];
+                for (let k = 0; k < element.elements.length; k++) {
+                    const subelement = element.elements[k];
+                    if (subelement.type == "link") {
+                        theLinks.push(subelement.url)
+                    }
                 }
             }
         }
+        for (let i = 0; i < theLinks.length; i++) {
+              const element = theLinks[i];
+              let ogData = await getOgData(element);
+              const airtableResult = await airtableTools.addRecord({
+                    baseId: process.env.AIRTABLE_SHOW_BASE,
+                    table: "ShowYourLinks",
+                    record: {
+                        "URL": element,
+                        "Title": ogData.ogTitle,
+                        "Description": ogData.ogDescription,
+                        "OgImageLink": ogData.ogImage.url,
+                        "OgImage": [
+                            {
+                            "url": ogData.ogImage.url,
+                            }
+                        ],
+                        "SlackTs": message.ts,
+                        "SlackJson": JSON.stringify(message, null, 4),
+                        "SlackUser": message.user,
+                    }
+                })
+          }
+    } catch (error) {
+        console.log(`error in show your links loop`);
     }
-    for (let i = 0; i < theLinks.length; i++) {
-          const element = theLinks[i];
-          let ogData = await getOgData(element);
-          const airtableResult = await airtableTools.addRecord({
-                baseId: process.env.AIRTABLE_SHOW_BASE,
-                table: "ShowYourLinks",
-                record: {
-                    "URL": element,
-                    "Title": ogData.ogTitle,
-                    "Description": ogData.ogDescription,
-                    "OgImageLink": ogData.ogImage.url,
-                    "OgImage": [
-                        {
-                        "url": ogData.ogImage.url,
-                        }
-                    ],
-                    "SlackTs": message.ts,
-                    "SlackJson": JSON.stringify(message, null, 4),
-                    "SlackUser": message.user,
-                }
-            })
-      }
+    
+
     // try {
     //     
     //     // TODO: parse and find more elements to send to other tables
