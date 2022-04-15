@@ -16,7 +16,8 @@ exports.rocket = async ({ message, client, say }) => {
 
 exports.parseAllNonBot = async ({ message, client, say }) => {
     magenta(`parsing all non-bot messages`)
-    grey(message)
+    // grey(message)
+    grey(message.channel)
     if (message.channel == process.env.SLACK_SHOW_YOUR_WORK_CHANNEL) {
         yellow(`work`)
         let result = await showYourWorkHandler({ message: message, say: say, client: client })
@@ -25,7 +26,7 @@ exports.parseAllNonBot = async ({ message, client, say }) => {
         await showYourLinksHandler({ message: message, say: say, client: client })
     } else if (message.channel == process.env.SLACK_SHOW_YOUR_IMAGES_CHANNEL) {
         yellow(`image`)
-        magenta(message)
+        // magenta(message)
         await showYourImagesHandler({ message: message, client: client, say: say })
     } else {
         yellow(`this isn't work, images or links--not handling for now`)
