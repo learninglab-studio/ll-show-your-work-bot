@@ -52,5 +52,5 @@ module.exports = async function(settings){
     title: `title for ${path.basename(gifResult.gifPath)}`,
     channels: process.env.SLACK_SHOW_YOUR_IMAGES_CHANNEL
   })
-  return ({downloadPath: downloadPath, gifResult: gifResult})
+  return ({downloadPath: downloadPath, gifResult: gifResult, slackResult: slackResult})
 };

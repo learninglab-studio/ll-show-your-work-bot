@@ -5,41 +5,52 @@ const makeGif = require('../make-gif')
 module.exports = async ({ message, client, say }) => {
     magenta(`handling post in show-your-work`)
     // say(`we'll show that, ${message.user}`)
-    // yellow(message)
+    let tagged_users = message.text.match(/\w+/g).join(" ")
+    yellow(message)
     if (message.files) {
         magenta(`handling attachment`)
         var publicResult
-        if (["mp4", "mov"].includes(message.files[0].filetype)) {
-            if (message.files[0].size < 50000000) {
-                const gifResult = await makeGif({
-                    file: message.files[0],
-                    client: client,
-                })
-                magenta(gifResult)
+
+        message.files.forEach(async file => {
+            if (["mp4", "mov"].includes(file.filetype)) {
+                if (file.size < 50000000) {
+                    const gifResult = await makeGif({
+                        file: file,
+                        client: client,
+                    })
+                    let slackResult = gifResult.slackResult.file
+                    magenta(gifResult)
+                    file.name = slackResult.name
+                    file.title = slackResult.title
+                    file.permalink = slackResult.permalink
+                    file.permalink_public = slackResult.permalink_public
+                } else {
+                    return
+                }
+            }  else {
+                publicResult = await client.files.sharedPublicURL({
+                    token: process.env.SLACK_USER_TOKEN,
+                    file: file.id,
+                });
             }
-        } else {
-            publicResult = await client.files.sharedPublicURL({
-                token: process.env.SLACK_USER_TOKEN,
-                file: message.files[0].id,
-            });
 
             const theRecord = {
                 baseId: process.env.AIRTABLE_SHOW_BASE,
                 table: "ShowYourImages",
                 record: {
-                    "Id": `${message.files[0].name}-${message.event_ts}`,
-                    "Title": message.files[0].title,
-                    "FileName": message.files[0].name,
-                    "SlackFileInfoJson": JSON.stringify(message.files[0], null, 4),
-                    // "SlackFileInfoJSON": JSON.stringify(fileInfo, null, 4),
+                    "Id": `${file.name}-${message.event_ts}`,
+                    "Title": file.title,
+                    "FileName": file.name,
+                    "SlackFileInfoJson": JSON.stringify(file, null, 4),
                     "ImageFiles": [
                         {
-                        "url": makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public)
+                        "url": makeSlackImageURL(file.permalink, file.permalink_public)
                         }
                     ],
-                    "SlackUrl": makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public),
-                    "PostedBySlackUser": message.files[0].user,
-                    "SlackTs": message.event_ts
+                    "SlackUrl": makeSlackImageURL(file.permalink, file.permalink_public),
+                    "PostedBySlackUser": file.user,
+                    "SlackTs": message.event_ts,
+                    "TaggedSlackUsers": tagged_users,
                 }
             }
             magenta(divider)
@@ -52,9 +63,9 @@ module.exports = async ({ message, client, say }) => {
                 unfurl_media: false,
                 unfurl_links: false,
                 parse: "none",
-                text: `here's the markdown for embedding the image: \n\`\`\`![alt text](${makeSlackImageURL(message.files[0].permalink, message.files[0].permalink_public)})\`\`\``
+                text: `here's the markdown for embedding the image: \n\`\`\`![alt text](${makeSlackImageURL(file.permalink, file.permalink_public)})\`\`\``
             })
-        }
+        });
     }
 }
 
