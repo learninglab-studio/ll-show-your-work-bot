@@ -10,13 +10,15 @@ module.exports = async ({ message, client, say }) => {
         magenta(`handling attachment`)
         var publicResult
         if (["mp4", "mov"].includes(message.files[0].filetype)) {
-            if (message.files[0].size < 50000000) {
-                const gifResult = await makeGif({
-                    file: message.files[0],
-                    client: client,
-                })
-                magenta(gifResult)
-            }
+            // if (message.files[0].size < 50000000) {
+            //     const gifResult = await makeGif({
+            //         file: message.files[0],
+            //         client: client,
+            //     })
+            //     magenta(gifResult)
+            // }
+            yellow(`got a movie, not doing anything about that right now`)
+            blue(message)
         } else {
             try {
                 publicResult = await client.files.sharedPublicURL({
